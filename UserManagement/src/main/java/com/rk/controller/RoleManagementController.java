@@ -27,23 +27,22 @@ public class RoleManagementController {
 
 	@Autowired
 	private RoleService roleService;
-	
+
 	@PostMapping("/save_role")
-	public ResponseEntity<Object> saveRole(@Valid @RequestBody RoleRequest roleRequest){
-		
-		
+	public ResponseEntity<Object> saveRole(@Valid @RequestBody RoleRequest roleRequest) {
+
 		if (Boolean.TRUE.equals(roleRepository.existsByRoleName(roleRequest.getRoleName()))) {
 			return new ResponseEntity<>(new ResponseMessage("Fail -> Rolename is already taken!"),
 					HttpStatus.BAD_REQUEST);
 		}
 		Boolean saveRole = roleService.saveRole(roleRequest);
-		
-		if(Boolean.FALSE.equals(saveRole)) {
+
+		if (Boolean.FALSE.equals(saveRole)) {
 			return new ResponseEntity<>(new ResponseMessage(ExceptionMessages.ROLE_NAME_NOT_SAVED),
 					HttpStatus.NOT_IMPLEMENTED);
 		}
-		
-		return new ResponseEntity<>(new ResponseMessage(ExceptionMessages.ROLE_NAME_SAVED),
-				HttpStatus.CREATED);
+
+		return new ResponseEntity<>(new ResponseMessage(ExceptionMessages.ROLE_NAME_SAVED), HttpStatus.CREATED);
 	}
+
 }

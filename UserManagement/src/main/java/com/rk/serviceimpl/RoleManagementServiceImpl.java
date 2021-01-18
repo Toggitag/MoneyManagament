@@ -11,42 +11,45 @@ import org.springframework.stereotype.Service;
 import com.rk.entity.Action;
 import com.rk.entity.Resource;
 import com.rk.entity.Role;
+import com.rk.repository.ResourceRepository;
 import com.rk.repository.RoleRepository;
 import com.rk.request.ResourcesRequest;
 import com.rk.request.RoleRequest;
 import com.rk.service.RoleService;
 
 @Service
-public class RoleServiceImpl implements RoleService {
+public class RoleManagementServiceImpl implements RoleService {
 
 	@Autowired
 	RoleRepository roleRepository;
 
+	@Autowired
+	ResourceRepository resourceRepository;
 	@Override
 	public Boolean saveRole(RoleRequest roleRequest) {
 		boolean isDone = false;
-		try {
+		try {	
 			Role role = new Role();
 			role.setRoleName(roleRequest.getRoleName());
 			role.setRoleDescription(roleRequest.getRoleDescription());
-
+			List<Resource> findAllResources = resourceRepository.findAll();
+			
 			Set<Resource> resourcesSet = new HashSet<Resource>();
 			roleRequest.getResourceReq().forEach(resourceReq -> {
-				Resource resource = new Resource();
-
-				resource.setName(resourceReq.getResourceName());
-				resource.setRole(role);
-				resource.setAction(setActionList(resourceReq, resource));
-				resourcesSet.add(resource);
+				findAllResources.forEach(findAllResource -> {
+					if(findAllResource.getName().equals(resourceReq.getResourceName())) {
+						resourcesSet.add(findAllResource);
+					}
+				});
+				role.setResource(resourcesSet);
 			});
-			role.setResource(resourcesSet);
-
+			
 			roleRepository.save(role);
 			return true;
 
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
-		}
+		}							
 		return isDone;
 	}
 
