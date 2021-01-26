@@ -67,6 +67,6 @@ public class Action {
 	public void setResource(Resource resource) {
 		this.resource = resource;
 	}
-	
-	
+
+
 }

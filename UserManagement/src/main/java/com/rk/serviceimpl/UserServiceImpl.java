@@ -16,7 +16,7 @@ import com.rk.request.SignUpForm;
 import com.rk.service.UserService;
 
 @Service
-public class UserManagementServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -42,8 +42,7 @@ public class UserManagementServiceImpl implements UserService {
 		List<Role> rolesList = roleRepository.findAll();
 		strRoles.forEach(role -> {
 			rolesList.forEach(roleFromDb -> {
-				if (role.equals(roleFromDb.getRoleName()))
-					;
+				if (role.equals(roleFromDb.getRoleName()));
 				roles.add(roleFromDb);
 			});
 		});
@@ -53,11 +52,5 @@ public class UserManagementServiceImpl implements UserService {
 
 		return true;
 
-	}
-
-	@Override
-	public User getUser(String username) {
-		User findByUsername = userRepository.findByUsername(username);
-		return findByUsername;
 	}
 }

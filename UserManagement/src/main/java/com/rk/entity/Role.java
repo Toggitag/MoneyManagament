@@ -4,19 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "roles",uniqueConstraints = { @UniqueConstraint(columnNames = { "roleName" })})
@@ -35,10 +23,10 @@ public class Role implements Serializable{
     
     @Column(length = 100)
     private String roleDescription;
-    
-    @ManyToMany(fetch = FetchType.LAZY)
+
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "roles_resource", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "resource_id"))
-	Set<Resource> resource = new HashSet<Resource>();
+	private Set<Resource> resource = new HashSet<>();
     
     public Role() {
 	}
