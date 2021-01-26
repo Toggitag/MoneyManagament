@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.rk.repository.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class RoleServiceImpl implements RoleService {
 	@Autowired
 	RoleRepository roleRepository;
 
+	@Autowired
+	ResourceRepository resourceRepository;
+
 	@Override
 	public Boolean saveRole(RoleRequest roleRequest) {
 		boolean isDone = false;
@@ -29,66 +33,20 @@ public class RoleServiceImpl implements RoleService {
 			Role role = new Role();
 			role.setRoleName(roleRequest.getRoleName());
 			role.setRoleDescription(roleRequest.getRoleDescription());
-
+			List<Resource> resourceList = resourceRepository.findAll();
 			Set<Resource> resourcesSet = new HashSet<Resource>();
 			roleRequest.getResourceReq().forEach(resourceReq -> {
-				Resource resource = new Resource();
-
-				resource.setName(resourceReq.getResourceName());
-				resource.setRole(role);
-				resource.setAction(setActionList(resourceReq, resource));
-				resourcesSet.add(resource);
+				resourceList.forEach( resource ->  {
+					if(roleRequest.getRoleName().equals(resource.getName()))
+						resourcesSet.add(resource);
+				});
 			});
 			role.setResource(resourcesSet);
-
 			roleRepository.save(role);
-			return true;
-
+			isDone = true;
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
 		return isDone;
-	}
-
-	private List<Action> setActionList(ResourcesRequest resourceReq, Resource resource) {
-
-		List<Action> actions = new ArrayList<Action>();
-		resourceReq.getActionRequest().forEach(actionReq -> {
-			if (Boolean.TRUE.equals(actionReq.getAdd())) {
-				Action actionAdd = new Action();
-				actionAdd.setName(actionReq.getActionName());
-				actionAdd.setGroupName(actionReq.getGroupName());
-				actionAdd.setType("add");
-				actionAdd.setResource(resource);
-				actions.add(actionAdd);
-			}
-			if (Boolean.TRUE.equals(actionReq.getView())) {
-				Action actionView = new Action();
-				actionView.setName(actionReq.getActionName());
-				actionView.setGroupName(actionReq.getGroupName());
-				actionView.setType("view");
-				actionView.setResource(resource);
-				actions.add(actionView);
-			}
-
-			if (Boolean.TRUE.equals(actionReq.getModify())) {
-				Action actionModify = new Action();
-				actionModify.setName(actionReq.getActionName());
-				actionModify.setGroupName(actionReq.getGroupName());
-				actionModify.setType("modify");
-				actionModify.setResource(resource);
-				actions.add(actionModify);
-			}
-
-			if (Boolean.TRUE.equals(actionReq.getDelete())) {
-				Action actionDelete = new Action();
-				actionDelete.setName(actionReq.getActionName());
-				actionDelete.setGroupName(actionReq.getGroupName());
-				actionDelete.setType("delete");
-				actionDelete.setResource(resource);
-				actions.add(actionDelete);
-			}
-		});
-		return actions;
 	}
 }

@@ -2,6 +2,7 @@ package com.rk.controller;
 
 import javax.validation.Valid;
 
+import com.rk.constants.EndPointsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import com.rk.service.RoleService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/user_management")
+@RequestMapping(EndPointsConstants.ROLE_MANAGEMENT)
 public class RoleManagementController {
 
 	@Autowired
